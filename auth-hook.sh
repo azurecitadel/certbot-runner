@@ -30,4 +30,4 @@ az network dns record-set txt add-record \
     -g "${DNS_ZONE_RG}" \
     -v "${CERTBOT_VALIDATION}"
 
-sleep 10
+sleep 20

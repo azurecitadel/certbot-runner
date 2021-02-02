@@ -19,7 +19,7 @@ PRIVATE_KEY_PATH="/usr/src/certbot/conf/live/${FIRST_DOMAIN}/privkey.pem"
 CERTIFICATE_NAME=$(echo $FIRST_DOMAIN | tr -d '.')
 
 # Combine PEM and key in one pfx file (pkcs#12)
-PFX_FILE=".${CERTIFICATE_PATH}.pfx"
+PFX_FILE="${CERTIFICATE_PATH}.pfx"
 TEMP_PASSWORD=$(tr -cd '[:alnum:]' < /dev/urandom | fold -w24 | head -n 1)
 
 openssl pkcs12 -export \
