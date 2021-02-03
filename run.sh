@@ -24,7 +24,7 @@ TEMP_PASSWORD=$(tr -cd '[:alnum:]' < /dev/urandom | fold -w24 | head -n 1)
 
 openssl pkcs12 -export \
     -in $CERTIFICATE_PATH \
-    -inkey $CERTIFICATE_NAME \
+    -inkey $PRIVATE_KEY_PATH \
     -out $PFX_FILE \
     -passin pass:$TEMP_PASSWORD \
     -passout pass:$TEMP_PASSWORD
@@ -34,4 +34,5 @@ az login --identity
 az keyvault certificate import \
     --vault-name "${VAULT_NAME}" \
     -n "${CERTIFICATE_NAME}" \
+    --password "${TEMP_PASSWORD}" \
     -f $PFX_FILE

@@ -14,7 +14,7 @@ if [ "$DNS_ZONE_RG" = "" ]; then
     exit 1
 fi
 
-TXT="_acme-challenge.${CERTBOT_DOMAIN}"
+TXT="_acme-challenge"
 
 echo "Adding $TXT to DNS zone $DNS_ZONE_NAME"
 
@@ -22,6 +22,7 @@ az network dns record-set txt create \
     -n "${TXT}" \
     -z "${DNS_ZONE_NAME}" \
     -g "${DNS_ZONE_RG}" \
+    --if-none-match \
     --ttl 30
 
 az network dns record-set txt add-record \
@@ -29,5 +30,3 @@ az network dns record-set txt add-record \
     -z "${DNS_ZONE_NAME}" \
     -g "${DNS_ZONE_RG}" \
     -v "${CERTBOT_VALIDATION}"
-
-sleep 20
