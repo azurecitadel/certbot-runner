@@ -6,7 +6,6 @@ certbot certonly -n \
     -m "${EMAIL}" \
     --manual \
     --preferred-challenges=dns \
-    --staging \
     --agree-tos \
     --manual-auth-hook /usr/src/certbot/auth-hook.sh \
     --manual-cleanup-hook /usr/src/certbot/cleanup.sh

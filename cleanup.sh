@@ -14,12 +14,12 @@ if [ "$DNS_ZONE_RG" = "" ]; then
     exit 1
 fi
 
-TXT="_acme-challenge.${CERTBOT_DOMAIN}"
+TXT="_acme-challenge"
 
 echo "Removing $TXT from DNS zone $DNS_ZONE_NAME"
 
-az network dns record-set txt delete \
+az network dns record-set txt remove-record \
     -n "${TXT}" \
     -z "${DNS_ZONE_NAME}" \
     -g "${DNS_ZONE_RG}" \
-    -y
+    -v "${CERTBOT_VALIDATION}"

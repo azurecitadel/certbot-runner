@@ -18,13 +18,6 @@ TXT="_acme-challenge"
 
 echo "Adding $TXT to DNS zone $DNS_ZONE_NAME"
 
-az network dns record-set txt create \
-    -n "${TXT}" \
-    -z "${DNS_ZONE_NAME}" \
-    -g "${DNS_ZONE_RG}" \
-    --if-none-match \
-    --ttl 30
-
 az network dns record-set txt add-record \
     -n "${TXT}" \
     -z "${DNS_ZONE_NAME}" \
