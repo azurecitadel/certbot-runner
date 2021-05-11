@@ -1,19 +1,21 @@
-FROM mcr.microsoft.com/azure-cli
-RUN apk add python3 python3-dev py3-pip build-base libressl-dev musl-dev libffi-dev jq
-RUN pip3 install pip --upgrade
-RUN pip3 install certbot
+FROM bitnami/minideb:stretch
 
-RUN addgroup -S certbot && adduser -S certbot -G certbot
-RUN mkdir -p /usr/src/certbot/logs /usr/src/certbot/conf /usr/src/certbot/work
-RUN chown -R certbot:certbot /usr/src/certbot
+RUN set -x \
+    && addgroup --system --gid 101 certbot \
+    && adduser --system --disabled-login --ingroup certbot --no-create-home --home /usr/src/certbot/ --gecos "certbot user" --shell /bin/false --uid 101 certbot \
+    && mkdir -p /usr/src/certbot/logs /usr/src/certbot/conf /usr/src/certbot/work \
+    && chown -R certbot:certbot /usr/src/certbot
+
+RUN export DEBIAN_FRONTEND=noninteractive \
+    && apt-get update \
+    && apt-get install -y apt-transport-https curl gnupg2 lsb-release \
+    && apt-get -y install --no-install-recommends certbot jq \
+    && apt-get autoremove -y --purge && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # Don't run as root
 USER certbot
 
-# Create the default directory for certbot config
-RUN mkdir -p /home/certbot/.config/letsencrypt/
-
-COPY ./cli.ini /home/certbot/.config/letsencrypt/
+COPY ./cli.ini /usr/src/certbot/
 COPY ./*.sh /usr/src/certbot/
 
 CMD ["/bin/sh", "/usr/src/certbot/run.sh"]
