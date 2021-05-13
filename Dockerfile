@@ -1,4 +1,4 @@
-FROM bitnami/minideb:stretch
+FROM bitnami/minideb:unstable
 
 RUN set -x \
     && addgroup --system --gid 101 certbot \
@@ -6,11 +6,7 @@ RUN set -x \
     && mkdir -p /usr/src/certbot/logs /usr/src/certbot/conf /usr/src/certbot/work \
     && chown -R certbot:certbot /usr/src/certbot
 
-RUN export DEBIAN_FRONTEND=noninteractive \
-    && apt-get update \
-    && apt-get install -y apt-transport-https curl gnupg2 lsb-release \
-    && apt-get -y install --no-install-recommends certbot jq \
-    && apt-get autoremove -y --purge && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/*
+RUN install_packages certbot jq curl
 
 # Don't run as root
 USER certbot

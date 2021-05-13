@@ -1,25 +1,29 @@
 #!/bin/sh
 
 # Must set:
-# * DOMAIN
-# * EMAIL
-# * VAULT_NAME
-# * FRONT_DOOR_NAME
-# * FRONT_DOOR_ENDPOINTS
+
+echo "Generating certificates for '${DOMAIN}' informing '${EMAIL}' updating '${VAULT_NAME}' before adding to '${FRONT_DOOR_ENDPOINTS}' on '${FRONT_DOOR_NAME}'"
 
 # Generate a cert request
-certbot certonly -n \
-    -d "${DOMAIN}" \
-    -m "${EMAIL}" \
-    --manual \
-    --preferred-challenges=dns \
-    --agree-tos \
-    --config /usr/src/certbot/cli.ini \
-    --manual-auth-hook /usr/src/certbot/auth-hook.sh \
-    --manual-cleanup-hook /usr/src/certbot/cleanup.sh
+generate_request () {
+    certbot certonly -n \
+        -d "${DOMAIN}" \
+        -m "${EMAIL}" \
+        --manual \
+        --preferred-challenges=dns \
+        --agree-tos \
+        --config /usr/src/certbot/cli.ini \
+        --manual-auth-hook /usr/src/certbot/auth-hook.sh \
+        --manual-cleanup-hook /usr/src/certbot/cleanup.sh
+}
 
 # Keep trying to generate a certificate until we have one
-while [ $? -ne 0 ]; do !!; done
+generate_request
+while [ $? -ne 0 ]
+do
+    sleep 5
+    generate_request
+done
 
 # It is possible to pass in multiple domains in 1 env var, split by commas
 # Ignore wildcard domains: https://certbot.eff.org/docs/using.html?highlight=domain#where-are-my-certificates
